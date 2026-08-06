@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tienda de Gustavo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F3EC;
+    --ink:#21231F;
+    --green:#2F4A3C;
+    --green-dark:#22362B;
+    --ochre:#D8A24A;
+    --line:#E4DCC9;
+    --white:#FFFDF9;
+    --whatsapp:#25D366;
+    --whatsapp-dark:#1DA851;
+    --danger:#B23B3B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  /* ---------- Header ---------- */
+  header.tienda-header{
+    background:var(--green);
+    color:var(--cream);
+    padding:28px 20px 34px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.tienda-header::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:0;
+    height:8px;
+    background:repeating-linear-gradient(90deg, var(--ochre) 0 22px, var(--green-dark) 22px 44px);
+  }
+  .header-inner{
+    max-width:960px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .store-name{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(28px, 5vw, 42px);
+    letter-spacing:-0.01em;
+  }
+  .store-tagline{
+    font-size:14px;
+    opacity:0.8;
+    font-weight:500;
+  }
+  .store-name[contenteditable="true"], .store-tagline[contenteditable="true"]{
+    outline:1px dashed var(--ochre);
+    outline-offset:4px;
+    border-radius:4px;
+  }
+
+  /* ---------- Layout ---------- */
+  main{
+    max-width:960px;
+    margin:0 auto;
+    padding:34px 20px 80px;
+  }
+  .section-label{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--green);
+    opacity:0.7;
+    margin-bottom:14px;
+  }
+
+  /* ---------- Grid de productos ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:22px;
+  }
+  .card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 24px rgba(33,35,31,0.08);
+  }
+  .card-photo-wrap{
+    position:relative;
+    aspect-ratio:1/1;
+    background:var(--cream);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .card-photo-wrap img{
+    width:100%;height:100%;object-fit:cover;
+  }
+  .card-photo-wrap .no-photo{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    color:#B7AD94;
+    text-align:center;
+    padding:10px;
+  }
+  .price-tag{
+    position:absolute;
+    top:10px;
+    right:-6px;
+    background:var(--ochre);
+    color:var(--green-dark);
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    font-size:14px;
+    padding:5px 12px 5px 14px;
+    border-radius:3px 0 0 3px;
+    box-shadow:-2px 2px 0 rgba(33,35,31,0.12);
+  }
+  .price-tag::before{
+    content:"";
+    position:absolute;
+    left:5px;top:50%;
+    width:5px;height:5px;
+    background:var(--cream);
+    border-radius:50%;
+    transform:translateY(-50%);
+  }
+  .card-body{
+    padding:14px 16px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    flex:1;
+  }
+  .card-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:17px;
+    line-height:1.25;
+  }
+  .btn-whatsapp{
+    margin-top:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:var(--whatsapp);
+    color:#fff;
+    font-weight:600;
+    font-size:14px;
+    padding:10px 14px;
+    border:none;
+    border-radius:7px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .btn-whatsapp:hover{background:var(--whatsapp-dark);}
+  .btn-whatsapp svg{width:16px;height:16px;flex-shrink:0;}
+
+  /* ---------- Empty state ---------- */
+  .empty-state{
+    text-align:center;
+    padding:70px 20px;
+    color:#8B8370;
+  }
+  .empty-state h2{
+    font-family:'Fraunces', serif;
+    font-size:22px;
+    color:var(--green);
+    margin-bottom:8px;
+  }
+
+  /* ---------- Boton flotante WhatsApp ---------- */
+  .fab-whatsapp{
+    position:fixed;
+    bottom:22px;
+    right:22px;
+    width:56px;height:56px;
+    background:var(--whatsapp);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.22);
+    cursor:pointer;
+    z-index:50;
+    transition:transform .15s ease;
+  }
+  .fab-whatsapp:hover{transform:scale(1.06);}
+  .fab-whatsapp svg{width:28px;height:28px;fill:#fff;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    text-align:center;
+    padding:26px 20px 40px;
+    font-size:12px;
+    color:#A69C82;
+  }
+  footer .admin-link{
+    text-decoration:underline;
+    cursor:pointer;
+    color:#A69C82;
+  }
+
+  /* ---------- Modal genérico ---------- */
+  .modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(33,35,31,0.55);
+    z-index:100;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:var(--white);
+    border-radius:12px;
+    max-width:480px;
+    width:100%;
+    max-height:88vh;
+    overflow-y:auto;
+    padding:26px 24px 28px;
+  }
+  .modal h3{
+    font-family:'Fraunces', serif;
+    font-size:20px;
+    color:var(--green);
+    margin-bottom:16px;
+  }
+  .field{margin-bottom:14px;}
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:var(--green);
+    margin-bottom:5px;
+  }
+  .field input, .field textarea{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:7px;
+    font-family:'Work Sans', sans-serif;
+    font-size:14px;
+    background:var(--cream);
+  }
+  .field input:focus, .field textarea:focus{
+    outline:2px solid var(--ochre);
+    outline-offset:1px;
+  }
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .btn{
+    flex:1;
+    padding:11px 14px;
+    border:none;
+    border-radius:7px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .btn-primary{background:var(--green);color:var(--cream);}
+  .btn-primary:hover{background:var(--green-dark);}
+  .btn-secondary{background:var(--line);color:var(--ink);}
+  .btn-secondary:hover{background:#d8cfb3;}
+  .btn-danger{background:var(--danger);color:#fff;}
+  .modal-close{
+    float:right;
+    cursor:pointer;
+    font-size:20px;
+    color:#A69C82;
+    line-height:1;
+  }
+  .error-msg{
+    color:var(--danger);
+    font-size:13px;
+    margin-top:8px;
+    display:none;
+  }
+  .error-msg.show{display:block;}
+
+  /* ---------- Panel admin ---------- */
+  .admin-panel-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:6px;
+  }
+  .admin-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:8px 10px;
+  }
+  .admin-item img{
+    width:44px;height:44px;
+    object-fit:cover;
+    border-radius:6px;
+    flex-shrink:0;
+    background:var(--cream);
+  }
+  .admin-item .info{flex:1;min-width:0;}
+  .admin-item .info .n{font-weight:600;font-size:13px;}
+  .admin-item .info .p{font-family:'Space Mono', monospace;font-size:12px;color:var(--green);}
+  .admin-item .actions{display:flex;gap:6px;}
+  .icon-btn{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:6px;
+    width:30px;height:30px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    font-size:14px;
+  }
+  .icon-btn:hover{background:var(--line);}
+  .tab-bar{
+    display:flex;
+    gap:6px;
+    margin-bottom:18px;
+    background:var(--cream);
+    border-radius:8px;
+    padding:4px;
+  }
+  .tab-btn{
+    flex:1;
+    padding:8px;
+    border:none;
+    background:transparent;
+    border-radius:6px;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+    color:var(--green);
+  }
+  .tab-btn.active{background:var(--green);color:var(--cream);}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+  .loading-text{
+    text-align:center;
+    padding:40px;
+    color:#A69C82;
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+  }
+  .img-preview{
+    width:100%;
+    max-height:160px;
+    object-fit:contain;
+    background:var(--cream);
+    border-radius:7px;
+    margin-top:8px;
+    display:none;
+  }
+</style>
+</head>
+<body>
+
+<header class="tienda-header">
+  <div class="header-inner">
+    <div class="store-name" id="storeName">Mi Tienda</div>
+    <div class="store-tagline" id="storeTagline">Productos con onda, directo por WhatsApp</div>
+  </div>
+</header>
+
+<main>
+  <div class="section-label" id="sectionLabel">Catálogo</div>
+  <div class="grid" id="grid"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <h2>Todavía no hay productos cargados</h2>
+    <p>El dueño de la tienda puede agregarlos desde el panel de administración.</p>
+  </div>
+  <div class="loading-text" id="loadingText">Cargando productos...</div>
+</main>
+
+<div class="fab-whatsapp" id="fabWhatsapp" title="Escribinos por WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.36a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2m0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.81.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.55-3.7 8.24-8.24 8.24m4.52-6.17c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.16.24-.64.81-.78.97-.14.17-.29.19-.53.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01a.9.9 0 0 0-.66.31c-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.25 3.74.59.26 1.05.41 1.42.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.23-.17-.48-.29"/></svg>
+</div>
+
+<footer>
+  © 2026 · Tienda hecha con AplíCop · <span class="admin-link" id="adminLink">panel</span>
+</footer>
+
+<!-- MODAL: PIN -->
+<div class="modal-overlay" id="pinModal">
+  <div class="modal">
+    <span class="modal-close" id="pinClose">×</span>
+    <h3>Acceso administrador</h3>
+    <div class="field">
+      <label>PIN</label>
+      <input type="password" id="pinInput" maxlength="6" inputmode="numeric" placeholder="••••">
+    </div>
+    <div class="error-msg" id="pinError">PIN incorrecto.</div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="pinSubmit">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADMIN -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal" style="max-width:560px;">
+    <span class="modal-close" id="adminClose">×</span>
+    <h3>Panel de administración</h3>
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="productos">Productos</button>
+      <button class="tab-btn" data-tab="config">Datos de la tienda</button>
+    </div>
+
+    <div class="tab-content active" id="tab-productos">
+      <div id="adminProductForm">
+        <div class="field">
+          <label>Nombre del producto</label>
+          <input type="text" id="prodNombre" placeholder="Ej: Remera estampada">
+        </div>
+        <div class="field">
+          <label>Precio (solo números)</label>
+          <input type="text" id="prodPrecio" placeholder="Ej: 12000" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Foto</label>
+          <input type="file" id="prodFoto" accept="image/*">
+          <img id="prodFotoPreview" class="img-preview">
+        </div>
+        <input type="hidden" id="prodEditId" value="">
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="prodCancelEdit" style="display:none;">Cancelar edición</button>
+          <button class="btn btn-primary" id="prodGuardar">Agregar producto</button>
+        </div>
+        <div class="error-msg" id="prodError"></div>
+      </div>
+      <hr style="margin:20px 0;border:none;border-top:1px solid var(--line);">
+      <div class="admin-panel-list" id="adminProductList"></div>
+    </div>
+
+    <div class="tab-content" id="tab-config">
+      <div class="field">
+        <label>Nombre de la tienda</label>
+        <input type="text" id="cfgNombre">
+      </div>
+      <div class="field">
+        <label>Frase debajo del nombre</label>
+        <input type="text" id="cfgTagline">
+      </div>
+      <div class="field">
+        <label>WhatsApp (con código de país, sin + ni espacios. Ej: 5491122334455)</label>
+        <input type="text" id="cfgWhatsapp" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>Mensaje que se arma automáticamente</label>
+        <textarea id="cfgMensaje" rows="2">Hola! Te consulto por {producto} - ${precio}</textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="cfgGuardar">Guardar cambios</button>
+      </div>
+      <div class="error-msg" id="cfgError"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ---------- Config Supabase (proyecto compartido) ----------
+const SUPABASE_URL = "https://flkjwpcypihdkiyblucs.supabase.co";
+const SUPABASE_KEY = "sb_publishable_u7n8Y8_cjU78pgqlSVkG6w_FO2K99Q2";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const ADMIN_PIN = "7415";
+
+let CONFIG = {
+  nombre_tienda: "Mi Tienda",
+  tagline: "Productos con onda, directo por WhatsApp",
+  whatsapp: "",
+  mensaje: "Hola! Te consulto por {producto} - ${precio}"
+};
+let PRODUCTOS = [];
+let isAdmin = false;
+
+// ---------- Utilidades ----------
+function formatPrecio(p){
+  const n = Number(p);
+  if(isNaN(n)) return p;
+  return n.toLocaleString('es-AR');
+}
+function waLink(nombreProducto, precio){
+  if(!CONFIG.whatsapp){
+    return null;
+  }
+  const msg = CONFIG.mensaje
+    .replace('{producto}', nombreProducto)
+    .replace('{precio}', formatPrecio(precio));
+  return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
+}
+
+// ---------- Carga inicial ----------
+async function cargarConfig(){
+  try{
+    const {data, error} = await sb.from('massa_config').select('*').eq('id', 1).single();
+    if(data){
+      CONFIG = {
+        nombre_tienda: data.nombre_tienda || CONFIG.nombre_tienda,
+        tagline: data.tagline || CONFIG.tagline,
+        whatsapp: data.whatsapp || "",
+        mensaje: data.mensaje || CONFIG.mensaje
+      };
+    }
+  }catch(e){ console.warn('config no disponible aun', e); }
+  document.getElementById('storeName').textContent = CONFIG.nombre_tienda;
+  document.getElementById('storeTagline').textContent = CONFIG.tagline;
+  document.getElementById('cfgNombre').value = CONFIG.nombre_tienda;
+  document.getElementById('cfgTagline').value = CONFIG.tagline;
+  document.getElementById('cfgWhatsapp').value = CONFIG.whatsapp;
+  document.getElementById('cfgMensaje').value = CONFIG.mensaje;
+}
+
+async function cargarProductos(){
+  document.getElementById('loadingText').style.display = 'block';
+  try{
+    const {data, error} = await sb.from('massa_productos').select('*').order('created_at', {ascending:true});
+    if(error) throw error;
+    PRODUCTOS = data || [];
+  }catch(e){
+    console.error(e);
+    PRODUCTOS = [];
+  }
+  document.getElementById('loadingText').style.display = 'none';
+  renderGrid();
+  renderAdminList();
+}
+
+function renderGrid(){
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('emptyState');
+  grid.innerHTML = "";
+  if(PRODUCTOS.length === 0){
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  PRODUCTOS.forEach(p=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    const link = waLink(p.nombre, p.precio);
+    card.innerHTML = `
+      <div class="card-photo-wrap">
+        ${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}">` : `<div class="no-photo">Sin foto</div>`}
+        <div class="price-tag">$${formatPrecio(p.precio)}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${p.nombre}</div>
+        ${link ? `<a class="btn-whatsapp" href="${link}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="#fff"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.36a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2m0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.81.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.55-3.7 8.24-8.24 8.24m4.52-6.17c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.16.24-.64.81-.78.97-.14.17-.29.19-.53.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01a.9.9 0 0 0-.66.31c-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.25 3.74.59.26 1.05.41 1.42.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.23-.17-.48-.29"/></svg>
+            Comprar por WhatsApp
+          </a>` : `<button class="btn-whatsapp" style="opacity:.5;cursor:not-allowed;" disabled>Falta configurar WhatsApp</button>`}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ---------- Fab whatsapp general ----------
+document.getElementById('fabWhatsapp').addEventListener('click', ()=>{
+  if(!CONFIG.whatsapp){ alert('Todavía no se configuró el WhatsApp de la tienda.'); return; }
+  const msg = `Hola! Te escribo desde ${CONFIG.nombre_tienda}`;
+  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+});
+
+// ---------- Modales ----------
+const pinModal = document.getElementById('pinModal');
+const adminModal = document.getElementById('adminModal');
+
+document.getElementById('adminLink').addEventListener('click', ()=>{
+  if(isAdmin){ openAdmin(); } else { pinModal.classList.add('open'); document.getElementById('pinInput').focus(); }
+});
+document.getElementById('pinClose').addEventListener('click', ()=> pinModal.classList.remove('open'));
+document.getElementById('adminClose').addEventListener('click', ()=> adminModal.classList.remove('open'));
+
+document.getElementById('pinSubmit').addEventListener('click', checkPin);
+document.getElementById('pinInput').addEventListener('keydown', e=>{ if(e.key === 'Enter') checkPin(); });
+
+function checkPin(){
+  const val = document.getElementById('pinInput').value.trim();
+  const err = document.getElementById('pinError');
+  if(val === ADMIN_PIN){
+    isAdmin = true;
+    err.classList.remove('show');
+    document.getElementById('pinInput').value = "";
+    pinModal.classList.remove('open');
+    openAdmin();
+  }else{
+    err.classList.add('show');
+  }
+}
+
+function openAdmin(){
+  renderAdminList();
+  adminModal.classList.add('open');
+}
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- Foto a base64 ----------
+let fotoBase64 = null;
+document.getElementById('prodFoto').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    fotoBase64 = reader.result;
+    const prev = document.getElementById('prodFotoPreview');
+    prev.src = fotoBase64;
+    prev.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+});
+
+// ---------- Guardar / editar producto ----------
+document.getElementById('prodGuardar').addEventListener('click', async ()=>{
+  const nombre = document.getElementById('prodNombre').value.trim();
+  const precio = document.getElementById('prodPrecio').value.trim().replace(/[^0-9]/g, '');
+  const editId = document.getElementById('prodEditId').value;
+  const err = document.getElementById('prodError');
+  err.classList.remove('show');
+
+  if(!nombre || !precio){
+    err.textContent = 'Completá nombre y precio.';
+    err.classList.add('show');
+    return;
+  }
+
+  const payload = { nombre, precio: Number(precio) };
+  if(fotoBase64) payload.imagen = fotoBase64;
+
+  try{
+    if(editId){
+      const {error} = await sb.from('massa_productos').update(payload).eq('id', editId);
+      if(error) throw error;
+    }else{
+      if(!payload.imagen) payload.imagen = null;
+      const {error} = await sb.from('massa_productos').insert(payload);
+      if(error) throw error;
+    }
+    resetProductForm();
+    await cargarProductos();
+  }catch(e){
+    console.error(e);
+    err.textContent = 'No se pudo guardar. Probá de nuevo.';
+    err.classList.add('show');
+  }
+});
+
+document.getElementById('prodCancelEdit').addEventListener('click', resetProductForm);
+
+function resetProductForm(){
+  document.getElementById('prodNombre').value = "";
+  document.getElementById('prodPrecio').value = "";
+  document.getElementById('prodEditId').value = "";
+  document.getElementById('prodFoto').value = "";
+  document.getElementById('prodFotoPreview').style.display = 'none';
+  document.getElementById('prodGuardar').textContent = 'Agregar producto';
+  document.getElementById('prodCancelEdit').style.display = 'none';
+  fotoBase64 = null;
+}
+
+function renderAdminList(){
+  const list = document.getElementById('adminProductList');
+  list.innerHTML = "";
+  PRODUCTOS.forEach(p=>{
+    const item = document.createElement('div');
+    item.className = 'admin-item';
+    item.innerHTML = `
+      ${p.imagen ? `<img src="${p.imagen}">` : `<div style="width:44px;height:44px;background:var(--cream);border-radius:6px;"></div>`}
+      <div class="info">
+        <div class="n">${p.nombre}</div>
+        <div class="p">$${formatPrecio(p.precio)}</div>
+      </div>
+      <div class="actions">
+        <button class="icon-btn" data-edit="${p.id}" title="Editar">✎</button>
+        <button class="icon-btn" data-del="${p.id}" title="Eliminar">🗑</button>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+
+  list.querySelectorAll('[data-edit]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const p = PRODUCTOS.find(x=>String(x.id) === b.dataset.edit);
+      if(!p) return;
+      document.getElementById('prodNombre').value = p.nombre;
+      document.getElementById('prodPrecio').value = p.precio;
+      document.getElementById('prodEditId').value = p.id;
+      if(p.imagen){
+        document.getElementById('prodFotoPreview').src = p.imagen;
+        document.getElementById('prodFotoPreview').style.display = 'block';
+      }
+      document.getElementById('prodGuardar').textContent = 'Guardar cambios';
+      document.getElementById('prodCancelEdit').style.display = 'block';
+      document.querySelector('.tab-btn[data-tab="productos"]').click();
+    });
+  });
+  list.querySelectorAll('[data-del]').forEach(b=>{
+    b.addEventListener('click', async ()=>{
+      if(!confirm('¿Eliminar este producto?')) return;
+      try{
+        const {error} = await sb.from('massa_productos').delete().eq('id', b.dataset.del);
+        if(error) throw error;
+        await cargarProductos();
+      }catch(e){ console.error(e); alert('No se pudo eliminar.'); }
+    });
+  });
+}
+
+// ---------- Guardar config ----------
+document.getElementById('cfgGuardar').addEventListener('click', async ()=>{
+  const nombre_tienda = document.getElementById('cfgNombre').value.trim() || 'Mi Tienda';
+  const tagline = document.getElementById('cfgTagline').value.trim();
+  const whatsapp = document.getElementById('cfgWhatsapp').value.trim().replace(/[^0-9]/g, '');
+  const mensaje = document.getElementById('cfgMensaje').value.trim() || 'Hola! Te consulto por {producto} - ${precio}';
+  const err = document.getElementById('cfgError');
+  err.classList.remove('show');
+
+  try{
+    const {error} = await sb.from('massa_config').upsert({
+      id: 1, nombre_tienda, tagline, whatsapp, mensaje
+    });
+    if(error) throw error;
+    CONFIG = { nombre_tienda, tagline, whatsapp, mensaje };
+    document.getElementById('storeName').textContent = nombre_tienda;
+    document.getElementById('storeTagline').textContent = tagline;
+    renderGrid();
+    alert('Datos guardados.');
+  }catch(e){
+    console.error(e);
+    err.textContent = 'No se pudo guardar la configuración.';
+    err.classList.add('show');
+  }
+});
+
+// ---------- Init ----------
+(async function init(){
+  await cargarConfig();
+  await cargarProductos();
+})();
+</script>
+</body>
+</html>
